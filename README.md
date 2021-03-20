@@ -11,4 +11,7 @@ tp -p 8080 -h localhost
 
 # for https proxy server
 tp -p 443 -h kycuat.yappay.in -prot https --key-path key.pem --cert-path cert.pem
+
+# for https proxy server and http request
+tp -p 443 -h kycuat.yappay.in -prot https --key-path key.pem --cert-path cert.pem --https-req
 ```
