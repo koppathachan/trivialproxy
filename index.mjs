@@ -63,8 +63,8 @@ server.on('request', (req, res) => {
         method: req.method,
         headers: req.headers
     };
-    console.log(opts)
     const preq = http.request(opts, pres => {
+        console.log('proxying...')
         pres.pipe(res)
         res.writeHead(pres.statusCode, pres.headers);
     });
@@ -76,3 +76,4 @@ server.on('request', (req, res) => {
 })
 
 server.listen(PORT || '4000')
+console.log(server.address());
