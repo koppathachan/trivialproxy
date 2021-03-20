@@ -1,0 +1,32 @@
+{
+  "name": "trivialproxy",
+  "version": "1.0.0",
+  "description": "A trivialproxy server",
+  "main": "index.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sasidakh/trivialproxy.git"
+  },
+  "keywords": [
+    "proxy",
+    "proxy server",
+    "trivial proxy",
+    "simple proxy"
+  ],
+  "author": "sasidakh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sasidakh/trivialproxy/issues"
+  },
+  "bin": {
+    "tp": "index.mjs"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "homepage": "https://github.com/sasidakh/trivialproxy#readme"
+}
