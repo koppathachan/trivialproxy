@@ -1,13 +1,15 @@
 #! /usr/bin/env node
 
 import * as https from 'https'
-import * as http from 'http';
-import * as fs from 'fs';
+import * as http from 'http'
+import * as fs from 'fs'
 
 const append = (obj = {}, name = '', val) => ({ ...obj, [name]: val })
 
 const processArgs = args => args.reduce((obj, arg, i) => {
     switch (arg) {
+        case '--https-req':
+            return append(obj, 'SSL', true)
         case '--key-path':
             const key = fs.readFileSync(args[i+1], 'utf-8');
             return append(obj, 'KEY', key)
@@ -36,11 +38,12 @@ const {
     PORT,
     KEY,
     CERT,
-    PROTOCOL
+    PROTOCOL,
+    SSL
 } = processArgs(process.argv.slice(1))
 
 const getServer = (protocol = 'http', { key = '', cert = '' } = {}) => {
-    if (protocol === 'http') return http.createServer();
+    if (protocol === 'http') return http.createServer()
     if (protocol === 'https') return https.createServer({
         key, cert
     });
@@ -50,11 +53,11 @@ const getServer = (protocol = 'http', { key = '', cert = '' } = {}) => {
 const server = getServer(PROTOCOL, { key: KEY, cert: CERT })
 
 server.on('request', (req, res) => {
-    res.on('error', console.error);
+    res.on('error', console.error)
     req.on('error', err => {
         console.error(err)
-        res.statusCode = 500;
-        res.end()
+        res.writeHead(500, req.headers)
+        res.end(err.message)
     })
     const opts = {
         host: PROXY_HOST || 'localhost',
@@ -63,17 +66,20 @@ server.on('request', (req, res) => {
         method: req.method,
         headers: req.headers
     };
-    const preq = http.request(opts, pres => {
+    delete opts.headers.host;
+    const svc = SSL ? https : http;
+    const preq = svc.request(opts, pres => {
         console.log('proxying...')
         pres.pipe(res)
         res.writeHead(pres.statusCode, pres.headers);
     });
     req.pipe(preq);
     preq.on('error', (err) => {
-        res.writeHead(500)
+        console.error(err)
+        res.writeHead(500, preq.getHeaders())
         res.end(err.message)
     });
 })
 
 server.listen(PORT || '4000')
-console.log(server.address());
+console.log(server.address())
