@@ -62,7 +62,7 @@ server.on('request', (req, res) => {
     const opts = {
         host: PROXY_HOST || 'localhost',
         port: PROXY_PORT || '3002',
-        path: req.path || req.url,
+        path: req.url,
         method: req.method,
         headers: req.headers
     };
